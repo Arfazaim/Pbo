@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/IdeaProjects.iml" filepath="$PROJECT_DIR$/.idea/IdeaProjects.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Swing Ui Designer/Swing Ui Designer.iml" filepath="$PROJECT_DIR$/Swing Ui Designer/Swing Ui Designer.iml" />
       <module fileurl="file://$PROJECT_DIR$/arzz/arzz.iml" filepath="$PROJECT_DIR$/arzz/arzz.iml" />
       <module fileurl="file://$PROJECT_DIR$/gygy/gygy.iml" filepath="$PROJECT_DIR$/gygy/gygy.iml" />
       <module fileurl="file://$PROJECT_DIR$/myObj/myObj.iml" filepath="$PROJECT_DIR$/myObj/myObj.iml" />
