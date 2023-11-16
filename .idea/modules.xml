@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/CRUD/CRUD.iml" filepath="$PROJECT_DIR$/CRUD/CRUD.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/IdeaProjects.iml" filepath="$PROJECT_DIR$/.idea/IdeaProjects.iml" />
       <module fileurl="file://$PROJECT_DIR$/Swing Ui Designer/Swing Ui Designer.iml" filepath="$PROJECT_DIR$/Swing Ui Designer/Swing Ui Designer.iml" />
       <module fileurl="file://$PROJECT_DIR$/arzz/arzz.iml" filepath="$PROJECT_DIR$/arzz/arzz.iml" />
