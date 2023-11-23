@@ -3,8 +3,11 @@ package gui;
 import other.Koneksi;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
 
 public class MenuProdi {
@@ -15,8 +18,7 @@ public class MenuProdi {
     private JButton updatebtn;
     private JButton deletebtn;
     private JButton cancelbtn;
-    private JTable table1;
-    private JScrollPane tblprodi;
+    private JTable tblprodi;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("MenuProdi");
@@ -36,8 +38,7 @@ public class MenuProdi {
             @Override
             public void actionPerformed(ActionEvent
                                                 actionEvent) {
-                String sql = "insert into tb_prodi values
-                (?,?)";
+                String sql = "insert into tb_prodi values (?,?)";
                 try {
                     PreparedStatement stat =
                             con.prepareStatement (sql);
@@ -57,15 +58,13 @@ public class MenuProdi {
         });
         updatebtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent
-                                                actionEvent) {
+            public void actionPerformed(ActionEvent actionEvent) {
                 String kd, prod;
                 kd =tkode.getText();
                 prod=tprodi.getText();
                 try{
                     Statement stt= con.createStatement();
-                    stt.executeUpdate("UPDATE tb_prodi SET
-                            nama_prodi='"+prod+"' WHERE kode_prodi='"+kd+"'");
+                    stt.executeUpdate("UPDATE tb_prodi SET nama_prodi='"+prod+"' WHERE kode_prodi='"+kd+"'");
                             JOptionPane.showMessageDialog(null,
                                     "Data Berhasil Diubah");
                     kosongprodi();
@@ -83,25 +82,21 @@ public class MenuProdi {
             public void actionPerformed(ActionEvent
                                                 actionEvent) {
                 int ok =
-                        JOptionPane.showConfirmDialog(null,"Apakah anda yakin akan
-                                menghapus? ","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                        JOptionPane.showConfirmDialog(null,"Apakah anda yakin akan menghapus? ","Konfirmasi",JOptionPane.YES_NO_OPTION);
                 if (ok==0){
-                    String sql = "delete from tb_prodi
-                    where kode_prodi ='"+tkode.getText()+"'";
+                    String sql = "delete from tb_prodi where kode_prodi ='"+tkode.getText()+"'";
                     try{
                         PreparedStatement stat =
                                 con.prepareStatement(sql);
                         stat.executeUpdate();
 
-                        JOptionPane.showMessageDialog(null, "Data Berhasil
-                                Dihapus");
+                        JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
                                 kosongprodi();
                         kodeotomatis();
                         tabelprodi();
                     }catch (SQLException e){
 
-                        JOptionPane.showMessageDialog(null, "Data Gagal
-                                Dihapus"+e);
+                        JOptionPane.showMessageDialog(null, "Data Gagal Dihapus"+e);
                     }
                 }
             }
@@ -112,6 +107,20 @@ public class MenuProdi {
                                                 actionEvent) {
                 kosongprodi();
                 kodeotomatis();
+            }
+        });
+        tblprodi.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent
+                                             mouseEvent) {
+                super.mouseClicked(mouseEvent);
+                int proddi = tblprodi.getSelectedRow();
+                String a = tabmode.getValueAt(proddi,
+                        0).toString();
+                String b = tabmode.getValueAt(proddi,
+                        1).toString();
+                tkode.setText(a);
+                tprodi.setText(b);
             }
         });
     }
@@ -128,7 +137,7 @@ public class MenuProdi {
     protected void tabelprodi(){
         Object[] barisprodi = {"KODE PRODI","PRODI"};
         tabmode = new DefaultTableModel(null, barisprodi);
-        tblprodi.setModel(tabmode);
+        tblprodi.setModel (tabmode);
         String sql = "select * from tb_prodi";
         try {
             java.sql.Statement stat = con.createStatement();
