@@ -1,8 +1,11 @@
 package gui;
 
+import other.Koneksi;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.*;
 
 public class MenuProdi {
     private JPanel pnlProdi;
@@ -13,6 +16,7 @@ public class MenuProdi {
     private JButton deletebtn;
     private JButton cancelbtn;
     private JTable table1;
+    private JScrollPane tblprodi;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("MenuProdi");
@@ -23,28 +27,91 @@ public class MenuProdi {
     }
 
     public MenuProdi() {
+        Koneksi DBA = new Koneksi();
+        DBA.config();
+        con = DBA.con;
+        tabelprodi();
+        kodeotomatis();
         savebtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
+            public void actionPerformed(ActionEvent
+                                                actionEvent) {
+                String sql = "insert into tb_prodi values
+                (?,?)";
+                try {
+                    PreparedStatement stat =
+                            con.prepareStatement (sql);
+                    stat.setString (1, tkode.getText());
+                    stat.setString (2, tprodi.getText());
+                    stat.executeUpdate();
+                    JOptionPane.showMessageDialog(null,
+                            "Data Berhasil Disimpan");
+                    kosongprodi ();
+                    kodeotomatis();
+                    tabelprodi();
+                }catch (SQLException e) {
+                    JOptionPane.showMessageDialog(null,
+                            "Data Gagal Disimpan "+e);
+                }
             }
         });
         updatebtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
+            public void actionPerformed(ActionEvent
+                                                actionEvent) {
+                String kd, prod;
+                kd =tkode.getText();
+                prod=tprodi.getText();
+                try{
+                    Statement stt= con.createStatement();
+                    stt.executeUpdate("UPDATE tb_prodi SET
+                            nama_prodi='"+prod+"' WHERE kode_prodi='"+kd+"'");
+                            JOptionPane.showMessageDialog(null,
+                                    "Data Berhasil Diubah");
+                    kosongprodi();
+                    kodeotomatis();
+                    tabelprodi();
+//
+                }catch (SQLException e){
+                    JOptionPane.showMessageDialog(null,
+                            "Data Gagal Diubah"+e);
+                }
             }
         });
         deletebtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent
+                                                actionEvent) {
+                int ok =
+                        JOptionPane.showConfirmDialog(null,"Apakah anda yakin akan
+                                menghapus? ","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                if (ok==0){
+                    String sql = "delete from tb_prodi
+                    where kode_prodi ='"+tkode.getText()+"'";
+                    try{
+                        PreparedStatement stat =
+                                con.prepareStatement(sql);
+                        stat.executeUpdate();
 
+                        JOptionPane.showMessageDialog(null, "Data Berhasil
+                                Dihapus");
+                                kosongprodi();
+                        kodeotomatis();
+                        tabelprodi();
+                    }catch (SQLException e){
+
+                        JOptionPane.showMessageDialog(null, "Data Gagal
+                                Dihapus"+e);
+                    }
+                }
             }
         });
         cancelbtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
+            public void actionPerformed(ActionEvent
+                                                actionEvent) {
+                kosongprodi();
+                kodeotomatis();
             }
         });
     }
@@ -55,6 +122,7 @@ public class MenuProdi {
         JFrame.setLocationRelativeTo(null);
         JFrame.setVisible(true);
     }
+
     Connection con;
     private DefaultTableModel tabmode;
     protected void tabelprodi(){
@@ -72,14 +140,12 @@ public class MenuProdi {
                 tabmode.addRow(data);
             }
         }catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Data Gagal
-                    Tampil" +e);
+            JOptionPane.showMessageDialog(null, "Data Gagal Tampil" +e);
         }
     }
     public void kodeotomatis(){
         try{
-            String sql="select right(kode_prodi,2) as kd_prod
-            from tb_prodi";
+            String sql="select right(kode_prodi,2) as kd_prod from tb_prodi";
             Statement stat=con.createStatement();
             ResultSet res=stat.executeQuery(sql);
             if(res.first()==false){
@@ -101,12 +167,5 @@ public class MenuProdi {
     protected void kosongprodi() {
         tkode.setText("");
         tprodi.setText("");
-    }
-    public MenuProdi() {
-        Koneksi DBA = new Koneksi();
-        DBA.config();
-        con = DBA.con;
-        tabelprodi();
-        kodeotomatis();
     }
 }
