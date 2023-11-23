@@ -58,7 +58,7 @@
           <text value="Angkatan"/>
         </properties>
       </component>
-      <component id="6d949" class="javax.swing.JButton" binding="savabtn">
+      <component id="6d949" class="javax.swing.JButton" binding="savebtn">
         <constraints>
           <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
           <gridbag weightx="0.0" weighty="0.0"/>
@@ -109,7 +109,7 @@
       <vspacer id="ca7f">
         <constraints>
           <grid row="8" column="5" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.0"/>
+          <gridbag weightx="0.0" weighty="0.0" ipady="70"/>
         </constraints>
       </vspacer>
       <vspacer id="f6489">
@@ -132,7 +132,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="71ace" class="javax.swing.JTable" binding="table1" default-binding="true">
+          <component id="71ace" class="javax.swing.JTable" binding="tblangkatan">
             <constraints/>
             <properties/>
           </component>

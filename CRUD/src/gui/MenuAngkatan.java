@@ -6,19 +6,19 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.*;
 
 public class MenuAngkatan {
     private JPanel pnlAngkatan;
     private JTextField tid;
     private JTextField tangkatan;
-    private JButton savabtn;
+    private JButton savebtn;
     private JButton updatebtn;
     private JButton deletebtn;
     private JButton cancelbtn;
-    private JTable table1;
+    private JTable tblangkatan;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("MenuAngkatan");
@@ -34,28 +34,85 @@ public class MenuAngkatan {
         con = DBA.con;
         tabelangkatan();
         otomatis();
-        savabtn.addActionListener(new ActionListener() {
+        savebtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
+            public void actionPerformed(ActionEvent actionEvent) {
+                String sql = "insert into tb_angkatan values (?,?)";
+                try {
+                    PreparedStatement stat = con.prepareStatement(sql);
+                    stat.setString (1,tid.getText() );
+                    stat.setString (2, tangkatan.getText());
+                    stat.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Data Berhasil Disimpan");
+                            kosongprodi ();
+                    otomatis();
+                    tabelangkatan();
+                }catch (SQLException e) {
+                    JOptionPane.showMessageDialog(null, "Data Gagal Disimpan "+e);
+                }
             }
         });
         updatebtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
+            public void actionPerformed(ActionEvent
+                                                actionEvent) {
+                String id_angkt,angkt;
+                id_angkt =tid.getText();
+                angkt =tangkatan.getText();
+                try{
+                    Statement stt= con.createStatement();
+                    stt.executeUpdate("UPDATE tb_angkatan SET tahun_angkatan='"+angkt+"' WHERE id = '"+id_angkt+"'");
+                    JOptionPane.showMessageDialog(null,
+                            "Data Berhasil Diubah");
+                    kosongprodi();
+                    otomatis();
+                    tabelangkatan();
+//
+                }catch (SQLException e){
+                    JOptionPane.showMessageDialog(null,
+                            "Data Gagal Diubah"+e);
+                }
             }
         });
         deletebtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
+            public void actionPerformed(ActionEvent actionEvent) {
+                int ok =
+                        JOptionPane.showConfirmDialog(null,"Apakah anda yakin akan menghapus? ","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                if (ok==0){
+                    String sql = "delete from tb_angkatan where tahun_angkatan ='"+tangkatan.getText()+"'";
+                    try{
+                        PreparedStatement stat =
+                                con.prepareStatement(sql);
+                        stat.executeUpdate();
+                        JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
+                                kosongprodi();
+                        otomatis();
+                        tabelangkatan();
+                    }catch (SQLException e){
+                        JOptionPane.showMessageDialog(null, "Data Gagal Dihapus"+e);
+                    }
+                }
             }
         });
         cancelbtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
+            public void actionPerformed(ActionEvent actionEvent) {
+                kosongprodi();
+                otomatis();
+            }
+        });
+        tblangkatan.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                super.mouseClicked(mouseEvent);
+                int angkataan = tblangkatan.getSelectedRow();
+                String a = tabmode.getValueAt(angkataan,
+                        0).toString();
+                String b = tabmode.getValueAt(angkataan,
+                        1).toString();
+                tid.setText(a);
+                tangkatan.setText(b);
             }
         });
     }
