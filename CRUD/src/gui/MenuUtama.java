@@ -5,11 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuUtama {
-    private JPanel PnlRoot;
-    private JButton akunmahasiswabtn;
-    private JButton prodibtn;
-    private JButton angkatanbtn;
-
     public MenuUtama() {
         akunmahasiswabtn.addActionListener(new ActionListener() {
             @Override
@@ -41,4 +36,9 @@ public class MenuUtama {
         frame.pack();
         frame.setVisible(true);
     }
+
+    private JPanel PnlRoot;
+    private JButton akunmahasiswabtn;
+    private JButton prodibtn;
+    private JButton angkatanbtn;
 }

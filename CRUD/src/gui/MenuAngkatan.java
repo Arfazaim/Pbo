@@ -11,35 +11,20 @@ import java.awt.event.MouseEvent;
 import java.sql.*;
 
 public class MenuAngkatan {
-    private JPanel pnlAngkatan;
-    private JTextField tid;
-    private JTextField tangkatan;
-    private JButton savebtn;
-    private JButton updatebtn;
-    private JButton deletebtn;
-    private JButton cancelbtn;
-    private JTable tblangkatan;
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("MenuAngkatan");
-        frame.setContentPane(new MenuAngkatan().pnlAngkatan);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-    }
-
     public MenuAngkatan() {
         Koneksi DBA = new Koneksi();
         DBA.config();
         con = DBA.con;
         tabelangkatan();
         otomatis();
+
         savebtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String sql = "insert into tb_angkatan values (?,?)";
                 try {
-                    PreparedStatement stat = con.prepareStatement(sql);
+                    PreparedStatement stat = con.prepareStatement
+                            (sql);
                     stat.setString (1,tid.getText() );
                     stat.setString (2, tangkatan.getText());
                     stat.executeUpdate();
@@ -61,7 +46,8 @@ public class MenuAngkatan {
                 angkt =tangkatan.getText();
                 try{
                     Statement stt= con.createStatement();
-                    stt.executeUpdate("UPDATE tb_angkatan SET tahun_angkatan='"+angkt+"' WHERE id = '"+id_angkt+"'");
+                    stt.executeUpdate("UPDATE tb_angkatan SET tahun_angkatan='"+angkt+"' WHERE id = '"+
+                            id_angkt+"'");
                     JOptionPane.showMessageDialog(null,
                             "Data Berhasil Diubah");
                     kosongprodi();
@@ -102,6 +88,7 @@ public class MenuAngkatan {
                 otomatis();
             }
         });
+
         tblangkatan.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
@@ -115,6 +102,14 @@ public class MenuAngkatan {
                 tangkatan.setText(b);
             }
         });
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("MenuAngkatan");
+        frame.setContentPane(new MenuAngkatan().pnlAngkatan);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }
     public void createLayout(){
         JFrame JFrame = new JFrame("MenuAngkatan");
@@ -135,8 +130,7 @@ public class MenuAngkatan {
             ResultSet dataangkatan = stat.executeQuery(sql);
             while (dataangkatan.next()){
                 String a = dataangkatan.getString("id");
-                String b =
-                        dataangkatan.getString("tahun_angkatan");
+                String b = dataangkatan.getString("tahun_angkatan");
                 String [] data={a,b};
                 tabmode.addRow(data);
             }
@@ -163,4 +157,13 @@ public class MenuAngkatan {
             throw new RuntimeException(e);
         }
     }
+
+    private JPanel pnlAngkatan;
+    private JTextField tid;
+    private JTextField tangkatan;
+    private JButton savebtn;
+    private JButton updatebtn;
+    private JButton deletebtn;
+    private JButton cancelbtn;
+    private JTable tblangkatan;
 }
