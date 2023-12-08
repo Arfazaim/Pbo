@@ -12,21 +12,21 @@ import java.sql.*;
 import java.util.HashMap;
 
 public class AkunMahasiswa {
+    private JPanel PnlMahasiswa;
+    private JTextField tnim;
+    private JComboBox CBprodi;
+    private JComboBox CBangkatan;
+    private JTextArea talamat;
+    private JButton btnsave;
+    private JTable tblmahasiswa;
+    private JTextField tnama_lengkap;
+    private JComboBox tstatus;
+    private JButton btnupdate;
+    private JButton btndelete;
+    private JButton btncancel;
+    private JLabel tkodeprodi;
+    private JLabel tidangkatan;
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("AkunMahasiswa");
-        frame.setContentPane(new AkunMahasiswa().pnlMahasiswa);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-    }
-    public void createLayout(){
-        JFrame JFrame = new JFrame("AkunMahasiswa");
-        JFrame.setContentPane(pnlMahasiswa);
-        JFrame.pack();
-        JFrame.setLocationRelativeTo(null);
-        JFrame.setVisible(true);
-    }
     public AkunMahasiswa() {
         Koneksi DBA = new Koneksi();
         DBA.config();
@@ -34,23 +34,40 @@ public class AkunMahasiswa {
         tabelmahasiswa();
         ComboAngkatan();
         ComboProdi();
+
+        CBprodi.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Koneksi Prod = new Koneksi();
+                HashMap <String, String> map = Prod.PopulateProdi();
+                tkodeprodi.setText(map.get(CBprodi.getSelectedItem().toString()));
+            }
+        });
+        CBangkatan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Koneksi angktan = new Koneksi();
+                HashMap <String, Integer> map = angktan.PopulateAngkatan();
+                tidangkatan.setText(map.get(CBangkatan.getSelectedItem().toString()).toString());
+            }
+        });
         btnsave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String sql = "insert into tb_mahasiswa(nim,nama_lengkap,prodi,angkatan,alamat,status) values (?,?,?,?,?,?)";
                 try {
-                    PreparedStatement stat = con.prepareStatement
-                            (sql);
+                    PreparedStatement stat = con.prepareStatement (sql);
+
                     stat.setString (1, tnim.getText());
                     stat.setString (2, tnama_lengkap.getText());
                     stat.setString (3, tkodeprodi.getText());
                     stat.setString (4, tidangkatan.getText());
                     stat.setString (5, talamat.getText());
-                    stat.setString (6,
-                            tstatus.getSelectedItem().toString());
+                    stat.setString (6, tstatus.getSelectedItem().toString());
+
                     stat.executeUpdate();
                     JOptionPane.showMessageDialog(null, "Data Berhasil Disimpan");
-                            kosongmahasiswa ();
+                    kosongmahasiswa ();
                     tabelmahasiswa();
                 }catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, "Data Gagal Disimpan "+e);
@@ -67,41 +84,19 @@ public class AkunMahasiswa {
                 idang=tidangkatan.getText();
                 talam = talamat.getText();
                 stat = tstatus.getSelectedItem().toString();
+
                 try{
+
                     Statement stt= con.createStatement();
-                    stt.executeUpdate("UPDATE tb_mahasiswa SET nama_lengkap='"+nm+"',prodi='"+kp+"',angkatan='"+idang+"'," + "alamat='"+talam+"',status='"+stat+"' WHERE nim='"+nimm+"'");
-                            JOptionPane.showMessageDialog(null, "Data Berhasil Diubah");
+                    stt.executeUpdate("UPDATE tb_mahasiswa SET nama_lengkap='"+nm+"',prodi='"+kp+"',angkatan='"+idang+"'," +
+                            "alamat='"+talam+"',status='"+stat+"' WHERE nim='"+nimm+"'");
+                    JOptionPane.showMessageDialog(null, "Data Berhasil Diubah");
                     kosongmahasiswa();
                     tabelmahasiswa();
+//
                 }catch (SQLException e){
                     JOptionPane.showMessageDialog(null, "Data Gagal Diubah"+e);
                 }
-            }
-        });
-        btndelete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                int ok =
-                        JOptionPane.showConfirmDialog(null,"Apakah anda yakin akan menghapus? ","Konfirmasi",JOptionPane.YES_NO_OPTION);
-                if (ok==0){
-                    String sql = "delete from tb_mahasiswa where nim ='"+tnim.getText()+"'";
-                    try{
-                        PreparedStatement stat =
-                                con.prepareStatement(sql);
-                        stat.executeUpdate();
-                        JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
-                                kosongmahasiswa();
-                        tabelmahasiswa();
-                    }catch (SQLException e){
-                        JOptionPane.showMessageDialog(null, "Data Gagal Dihapus"+e);
-                    }
-                }
-            }
-        });
-        btncancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                kosongmahasiswa();
             }
         });
         tblmahasiswa.addMouseListener(new MouseAdapter() {
@@ -115,101 +110,111 @@ public class AkunMahasiswa {
                 String d = tabmode.getValueAt(bar, 3).toString();
                 String e = tabmode.getValueAt(bar, 4).toString();
                 String f = tabmode.getValueAt(bar, 5).toString();
+
                 tnim.setText(a);
                 tnama_lengkap.setText(b);
-                CBProdi.setSelectedItem(c);
-                CBAngkatan.setSelectedItem(d);
+                CBprodi.setSelectedItem(c);
+                CBangkatan.setSelectedItem(d);
                 talamat.setText(e);
                 tstatus.setSelectedItem(f);
             }
         });
-        CBProdi.addActionListener(new ActionListener() {
+        btndelete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                Koneksi Prod = new Koneksi();
-                HashMap <String, String> map =
-                        Prod.PopulateProdi();
+                int ok = JOptionPane.showConfirmDialog(null,"Apakah anda yakin akan menghapus? ","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                if (ok==0){
+                    String sql = "delete from tb_mahasiswa where nim ='"+tnim.getText()+"'";
+                    try{
+                        PreparedStatement stat = con.prepareStatement(sql);
+                        stat.executeUpdate();
+                        JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
+                        kosongmahasiswa();
+                        tabelmahasiswa();
+                    }catch (SQLException e){
+                        JOptionPane.showMessageDialog(null, "Data Gagal Dihapus"+e);
+                    }
 
-                tkodeprodi.setText(map.get(CBProdi.getSelectedItem().toString()));
+                }
             }
         });
-        CBAngkatan.addActionListener(new ActionListener() {
+        btncancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                Koneksi angktan = new Koneksi();
-                HashMap <String, Integer> map =
-                        angktan.PopulateAngkatan();
-
-                tidangkatan.setText(map.get(CBAngkatan.getSelectedItem().toString()).toString());
+                kosongmahasiswa();
             }
         });
     }
 
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("AkunMahasiswa");
+        frame.setContentPane(new AkunMahasiswa().PnlMahasiswa);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
     Connection con;
     private DefaultTableModel tabmode;
+    ResultSet rs = null;
+    PreparedStatement pst = null;
+    Statement stt;
     protected void kosongmahasiswa() {
         tnim.setText("");
         tnama_lengkap.setText("");
-        CBProdi.setSelectedItem("");
-        CBAngkatan.setSelectedItem("");
+        CBprodi.setSelectedItem("");
+        CBangkatan.setSelectedItem("");
         talamat.setText("");
         tstatus.setSelectedItem("");
     }
     protected void tabelmahasiswa(){
         Object[] barismahasiswa = {"NIM","NAMA","PRODI", "ANGKATAN","ALAMAT","STATUS"};
-        tabmode = new DefaultTableModel(null,
-                barismahasiswa);
+        tabmode = new DefaultTableModel(null, barismahasiswa);
         tblmahasiswa.setModel(tabmode);
-        String sql = "SELECT nim,nama_lengkap, tb_prodi.nama_prodi, tb_angkatan.tahun_angkatan, alamat,status " + "FROM tb_mahasiswa " + "INNER JOIN tb_prodi ON tb_mahasiswa.prodi = tb_prodi.kode_prodi " + "INNER JOIN tb_angkatan ON tb_mahasiswa.angkatan = tb_angkatan.id";
-// String sql = "select * from akun_mahasiswa";
+        String sql = "SELECT nim,nama_lengkap, tb_prodi.nama_prodi, tb_angkatan.tahun_angkatan, alamat,status " +
+                "FROM tb_mahasiswa " +
+                "INNER JOIN tb_prodi ON tb_mahasiswa.prodi = tb_prodi.kode_prodi " +
+                "INNER JOIN tb_angkatan ON tb_mahasiswa.angkatan = tb_angkatan.id";
+//        String sql = "select * from akun_mahasiswa";
         try {
-            java.sql.Statement stat =
-                    con.createStatement();
+            java.sql.Statement stat = con.createStatement();
             ResultSet dataprodi = stat.executeQuery(sql);
             while (dataprodi.next()){
                 String a = dataprodi.getString("nim");
-                String b =
-                        dataprodi.getString("nama_lengkap");
-                String c =
-                        dataprodi.getString("nama_prodi");
-                String d =
-                        dataprodi.getString("tahun_angkatan");
+                String b = dataprodi.getString("nama_lengkap");
+                String c = dataprodi.getString("nama_prodi");
+                String d = dataprodi.getString("tahun_angkatan");
                 String e = dataprodi.getString("alamat");
                 String f = dataprodi.getString("status");
+
                 String [] data={a,b,c,d,e,f};
                 tabmode.addRow(data);
             }
         }catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Data Gagal Tampil" +e);
         }
+
     }
     public void ComboAngkatan(){
         Koneksi mq = new Koneksi();
         HashMap<String, Integer > map = mq.PopulateAngkatan();
         for(String s : map.keySet()){
-            CBAngkatan.addItem(s);
+            CBangkatan.addItem(s);
         }
     }
     public void ComboProdi(){
         Koneksi mq = new Koneksi();
         HashMap<String, String > map = mq.PopulateProdi();
         for(String s : map.keySet()){
-            CBProdi.addItem(s);
+            CBprodi.addItem(s);
         }
     }
 
-    private JPanel pnlMahasiswa;
-    private JTextField tnim;
-    private JTextField tnama_lengkap;
-    private JComboBox CBProdi;
-    private JComboBox CBAngkatan;
-    private JTextField talamat;
-    private JComboBox tstatus;
-    private JButton btnsave;
-    private JButton btnupdate;
-    private JButton btndelete;
-    private JButton btncancel;
-    private JTable tblmahasiswa;
-    private JLabel tkodeprodi;
-    private JLabel tidangkatan;
+    public void createLayout(){
+        JFrame JFrame = new JFrame("AkunMahasiswa");
+        JFrame.setContentPane(PnlMahasiswa);
+        JFrame.pack();
+        JFrame.setLocationRelativeTo(null);
+        JFrame.setVisible(true);
+    }
 }
